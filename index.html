@@ -1,299 +1,323 @@
-import React, { useState } from 'react';
-import { 
-  Calculator, 
-  Package, 
-  CheckCircle, 
-  Info, 
-  ShoppingCart, 
-  Printer, 
-  Box 
-} from 'lucide-react';
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopee Growth Tools - Kalkulator</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-50">
 
-const App = () => {
-  // State for Pricing Calculator
-  const [hpp, setHpp] = useState(10000);
-  const [plasticCost, setPlasticCost] = useState(500);
-  const [printCost, setPrintCost] = useState(200);
-  const [marginPercent, setMarginPercent] = useState(30);
-  const [adminFee, setAdminFee] = useState(6); 
-  const [extraFees, setExtraFees] = useState({
-    gratisOngkir: 4,
-    cashbackExtra: 2,
-    adsBudget: 10
-  });
+    <div id="root"></div>
 
-  // Calculations
-  const totalProductionCost = hpp + plasticCost + printCost;
-  const totalFeesPercent = adminFee + extraFees.gratisOngkir + extraFees.cashbackExtra + extraFees.adsBudget;
-  
-  // Formula: Price = Total Modal / (1 - Total Fees %)
-  const recommendedPrice = Math.ceil(totalProductionCost / (1 - (marginPercent + totalFeesPercent) / 100));
-  
-  const adminValue = (recommendedPrice * adminFee) / 100;
-  const programValue = (recommendedPrice * (extraFees.gratisOngkir + extraFees.cashbackExtra)) / 100;
-  const adsValue = (recommendedPrice * extraFees.adsBudget) / 100;
-  const netProfit = recommendedPrice - totalProductionCost - adminValue - programValue - adsValue;
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-8">
-      {/* Header */}
-      <header className="max-w-6xl mx-auto mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-orange-600 flex items-center gap-2">
-            <ShoppingCart className="w-8 h-8" /> Shopee Growth Tools
-          </h1>
-          <p className="text-slate-500">Kalkulator Harga & Alat Pantau UMKM Legging Anak</p>
-        </div>
-        <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
-          <div className="text-right">
-            <p className="text-xs text-slate-400 uppercase font-semibold">Status Operasional</p>
-            <p className="text-sm font-bold text-blue-600 italic">"Ready to Scale Bulan 1"</p>
-          </div>
-          <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-            <Package size={24} />
-          </div>
-        </div>
-      </header>
+        // Komponen Icon Sederhana (Pengganti Lucide agar jalan tanpa install)
+        const Icon = ({ emoji }) => <span className="text-xl mr-1">{emoji}</span>;
+        const ShoppingCart = () => <Icon emoji="🛒" />;
+        const Package = () => <Icon emoji="📦" />;
+        const Calculator = () => <Icon emoji="🖩" />;
+        const CheckCircle = () => <Icon emoji="✅" />;
+        const Info = () => <Icon emoji="ℹ️" />;
+        const Printer = () => <Icon emoji="🖨️" />;
+        const Box = () => <Icon emoji="🧊" />;
 
-      <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* Left Column: Calculator */}
-        <div className="lg:col-span-2 space-y-6">
-          <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-            <div className="flex items-center gap-2 mb-6 border-b pb-4">
-              <Calculator className="text-orange-500" />
-              <h2 className="text-xl font-bold">Kalkulator Harga & Profit Bersih</h2>
-            </div>
+        const App = () => {
+            // State for Pricing Calculator
+            const [hpp, setHpp] = useState(10000);
+            const [plasticCost, setPlasticCost] = useState(500);
+            const [printCost, setPrintCost] = useState(200);
+            const [marginPercent, setMarginPercent] = useState(30);
+            const [adminFee, setAdminFee] = useState(6);
+            const [extraFees, setExtraFees] = useState({
+                gratisOngkir: 4,
+                cashbackExtra: 2,
+                adsBudget: 10
+            });
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* Inputs */}
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Harga Barang (HPP)</label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-2.5 text-slate-400 text-sm font-bold">Rp</span>
-                      <input 
-                        type="number" 
-                        value={hpp}
-                        onChange={(e) => setHpp(Number(e.target.value))}
-                        className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none transition-all font-bold"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="grid grid-cols-2 gap-3">
+            // Calculations
+            const totalProductionCost = hpp + plasticCost + printCost;
+            const totalFeesPercent = adminFee + extraFees.gratisOngkir + extraFees.cashbackExtra + extraFees.adsBudget;
+
+            // Formula: Price = Total Modal / (1 - Total Fees %)
+            const recommendedPrice = Math.ceil(totalProductionCost / (1 - (marginPercent + totalFeesPercent) / 100));
+
+            const adminValue = (recommendedPrice * adminFee) / 100;
+            const programValue = (recommendedPrice * (extraFees.gratisOngkir + extraFees.cashbackExtra)) / 100;
+            const adsValue = (recommendedPrice * extraFees.adsBudget) / 100;
+            const netProfit = recommendedPrice - totalProductionCost - adminValue - programValue - adsValue;
+
+            return (
+                <div className="min-h-screen bg-slate-50 text-slate-900 font-sans p-4 md:p-8">
+                {/* Header */}
+                <header className="max-w-6xl mx-auto mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                      <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase flex items-center gap-1">
-                        <Box size={12} /> Plastik/Pack
-                      </label>
-                      <input 
-                        type="number" 
-                        value={plasticCost}
-                        onChange={(e) => setPlasticCost(Number(e.target.value))}
-                        className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm"
-                      />
+                    <h1 className="text-3xl font-bold text-orange-600 flex items-center gap-2">
+                        <ShoppingCart /> Shopee Growth Tools
+                    </h1>
+                    <p className="text-slate-500">Kalkulator Harga & Alat Pantau UMKM Legging Anak</p>
                     </div>
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase flex items-center gap-1">
-                        <Printer size={12} /> Print Resi
-                      </label>
-                      <input 
-                        type="number" 
-                        value={printCost}
-                        onChange={(e) => setPrintCost(Number(e.target.value))}
-                        className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm"
-                      />
+                    <div className="bg-white p-3 rounded-xl shadow-sm border border-slate-200 flex items-center gap-4">
+                    <div className="text-right">
+                        <p className="text-xs text-slate-400 uppercase font-semibold">Status Operasional</p>
+                        <p className="text-sm font-bold text-blue-600 italic">"Ready to Scale Bulan 1"</p>
                     </div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Target Margin Keuntungan (%)</label>
-                  <div className="flex items-center gap-4">
-                    <input 
-                      type="range" min="5" max="60" 
-                      value={marginPercent}
-                      onChange={(e) => setMarginPercent(Number(e.target.value))}
-                      className="flex-1 accent-orange-500"
-                    />
-                    <span className="font-bold text-orange-600 w-12">{marginPercent}%</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Admin Shopee</label>
-                    <select 
-                      value={adminFee}
-                      onChange={(e) => setAdminFee(Number(e.target.value))}
-                      className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg outline-none text-sm"
-                    >
-                      <option value={4}>Non-Star (4%)</option>
-                      <option value={6}>Star Seller (6%)</option>
-                      <option value={7.5}>Star+ Seller (7.5%)</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Budget Iklan</label>
-                    <div className="relative">
-                      <input 
-                        type="number" 
-                        value={extraFees.adsBudget}
-                        onChange={(e) => setExtraFees({...extraFees, adsBudget: Number(e.target.value)})}
-                        className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg outline-none text-sm"
-                      />
-                      <span className="absolute right-3 top-2 text-slate-400 text-xs">%</span>
+                    <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                        <Package />
                     </div>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-orange-50 rounded-xl space-y-2 border border-orange-100">
-                  <p className="text-[10px] font-black text-orange-800 uppercase tracking-widest">Program Aktif (Shopee Extra)</p>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-slate-700">Gratis Ongkir Extra (4%)</span>
-                    <input 
-                      type="checkbox" 
-                      checked={extraFees.gratisOngkir > 0} 
-                      onChange={(e) => setExtraFees({...extraFees, gratisOngkir: e.target.checked ? 4 : 0})}
-                      className="accent-orange-500 h-4 w-4"
-                    />
-                  </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-slate-700">Cashback Extra (2%)</span>
-                    <input 
-                      type="checkbox" 
-                      checked={extraFees.cashbackExtra > 0} 
-                      onChange={(e) => setExtraFees({...extraFees, cashbackExtra: e.target.checked ? 2 : 0})}
-                      className="accent-orange-500 h-4 w-4"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Result Display */}
-              <div className="bg-slate-900 text-white p-6 rounded-2xl flex flex-col justify-between border-4 border-orange-500/20 shadow-xl">
-                <div>
-                  <div className="flex justify-between items-start mb-1">
-                    <p className="text-slate-400 text-[10px] uppercase tracking-widest font-bold">Harga Jual Rekomendasi</p>
-                    <span className="bg-orange-600 text-[10px] px-2 py-0.5 rounded-full font-bold">SHOPEE</span>
-                  </div>
-                  <h3 className="text-4xl font-black text-white mb-2">
-                    Rp {recommendedPrice.toLocaleString('id-ID')}
-                  </h3>
-                  <p className="text-slate-500 text-[11px] mb-6 italic">Sudah termasuk biaya pack & resi Rp{(plasticCost + printCost).toLocaleString('id-ID')}</p>
-                  
-                  <div className="space-y-3">
-                    <div className="flex justify-between text-sm border-b border-slate-700 pb-2">
-                      <span className="text-slate-400">Potongan Shopee (Admin+Prog)</span>
-                      <span className="text-red-400">-Rp {(adminValue + programValue).toLocaleString('id-ID')}</span>
                     </div>
-                    <div className="flex justify-between text-sm border-b border-slate-700 pb-2">
-                      <span className="text-slate-400">Modal Produksi + Ops</span>
-                      <span className="text-slate-300">-Rp {totalProductionCost.toLocaleString('id-ID')}</span>
+                </header>
+
+                <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    {/* Left Column: Calculator */}
+                    <div className="lg:col-span-2 space-y-6">
+                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <div className="flex items-center gap-2 mb-6 border-b pb-4">
+                        <Calculator />
+                        <h2 className="text-xl font-bold">Kalkulator Harga & Profit Bersih</h2>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {/* Inputs */}
+                        <div className="space-y-4">
+                            <div className="grid grid-cols-1 gap-4">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 mb-1 uppercase tracking-wider">Harga Barang (HPP)</label>
+                                <div className="relative">
+                                <span className="absolute left-3 top-2.5 text-slate-400 text-sm font-bold">Rp</span>
+                                <input 
+                                    type="number" 
+                                    value={hpp}
+                                    onChange={(e) => setHpp(Number(e.target.value))}
+                                    className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none transition-all font-bold"
+                                />
+                                </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase flex items-center gap-1">
+                                    <Box /> Plastik/Pack
+                                </label>
+                                <input 
+                                    type="number" 
+                                    value={plasticCost}
+                                    onChange={(e) => setPlasticCost(Number(e.target.value))}
+                                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm"
+                                />
+                                </div>
+                                <div>
+                                <label className="block text-[10px] font-bold text-slate-500 mb-1 uppercase flex items-center gap-1">
+                                    <Printer /> Print Resi
+                                </label>
+                                <input 
+                                    type="number" 
+                                    value={printCost}
+                                    onChange={(e) => setPrintCost(Number(e.target.value))}
+                                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-sm"
+                                />
+                                </div>
+                            </div>
+                            </div>
+
+                            <div>
+                            <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Target Margin Keuntungan (%)</label>
+                            <div className="flex items-center gap-4">
+                                <input 
+                                type="range" min="5" max="60" 
+                                value={marginPercent}
+                                onChange={(e) => setMarginPercent(Number(e.target.value))}
+                                className="flex-1 accent-orange-500"
+                                />
+                                <span className="font-bold text-orange-600 w-12">{marginPercent}%</span>
+                            </div>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Admin Shopee</label>
+                                <select 
+                                value={adminFee}
+                                onChange={(e) => setAdminFee(Number(e.target.value))}
+                                className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg outline-none text-sm"
+                                >
+                                <option value={4}>Non-Star (4%)</option>
+                                <option value={6}>Star Seller (6%)</option>
+                                <option value={7.5}>Star+ Seller (7.5%)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-bold text-slate-500 mb-1 uppercase">Budget Iklan</label>
+                                <div className="relative">
+                                <input 
+                                    type="number" 
+                                    value={extraFees.adsBudget}
+                                    onChange={(e) => setExtraFees({...extraFees, adsBudget: Number(e.target.value)})}
+                                    className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg outline-none text-sm"
+                                />
+                                <span className="absolute right-3 top-2 text-slate-400 text-xs">%</span>
+                                </div>
+                            </div>
+                            </div>
+
+                            <div className="p-4 bg-orange-50 rounded-xl space-y-2 border border-orange-100">
+                            <p className="text-[10px] font-black text-orange-800 uppercase tracking-widest">Program Aktif (Shopee Extra)</p>
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-slate-700">Gratis Ongkir Extra (4%)</span>
+                                <input 
+                                type="checkbox" 
+                                checked={extraFees.gratisOngkir > 0} 
+                                onChange={(e) => setExtraFees({...extraFees, gratisOngkir: e.target.checked ? 4 : 0})}
+                                className="accent-orange-500 h-4 w-4"
+                                />
+                            </div>
+                            <div className="flex justify-between items-center text-sm">
+                                <span className="text-slate-700">Cashback Extra (2%)</span>
+                                <input 
+                                type="checkbox" 
+                                checked={extraFees.cashbackExtra > 0} 
+                                onChange={(e) => setExtraFees({...extraFees, cashbackExtra: e.target.checked ? 2 : 0})}
+                                className="accent-orange-500 h-4 w-4"
+                                />
+                            </div>
+                            </div>
+                        </div>
+
+                        {/* Result Display */}
+                        <div className="bg-slate-900 text-white p-6 rounded-2xl flex flex-col justify-between border-4 border-orange-500/20 shadow-xl">
+                            <div>
+                            <div className="flex justify-between items-start mb-1">
+                                <p className="text-slate-400 text-[10px] uppercase tracking-widest font-bold">Harga Jual Rekomendasi</p>
+                                <span className="bg-orange-600 text-[10px] px-2 py-0.5 rounded-full font-bold">SHOPEE</span>
+                            </div>
+                            <h3 className="text-4xl font-black text-white mb-2">
+                                Rp {recommendedPrice.toLocaleString('id-ID')}
+                            </h3>
+                            <p className="text-slate-500 text-[11px] mb-6 italic">Sudah termasuk biaya pack & resi Rp{(plasticCost + printCost).toLocaleString('id-ID')}</p>
+                            
+                            <div className="space-y-3">
+                                <div className="flex justify-between text-sm border-b border-slate-700 pb-2">
+                                <span className="text-slate-400">Potongan Shopee (Admin+Prog)</span>
+                                <span className="text-red-400">-Rp {(adminValue + programValue).toLocaleString('id-ID')}</span>
+                                </div>
+                                <div className="flex justify-between text-sm border-b border-slate-700 pb-2">
+                                <span className="text-slate-400">Modal Produksi + Ops</span>
+                                <span className="text-slate-300">-Rp {totalProductionCost.toLocaleString('id-ID')}</span>
+                                </div>
+                                <div className="flex justify-between text-sm border-b border-slate-700 pb-2">
+                                <span className="text-slate-400 italic">Budget Iklan</span>
+                                <span className="text-blue-400">-Rp {adsValue.toLocaleString('id-ID')}</span>
+                                </div>
+                                <div className="flex justify-between items-center pt-4">
+                                <div>
+                                    <span className="text-green-400 uppercase text-[10px] font-black block leading-tight">Profit Bersih</span>
+                                    <span className="text-2xl font-black text-green-400 leading-tight">Rp {Math.floor(netProfit).toLocaleString('id-ID')}</span>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-slate-500 text-[10px] block">Margin Bersih</span>
+                                    <span className="text-lg font-bold text-white leading-tight">{((netProfit/recommendedPrice)*100).toFixed(1)}%</span>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+
+                            <div className="mt-8 p-3 bg-slate-800/50 rounded-lg text-[11px] text-slate-300 leading-relaxed border border-slate-700">
+                            <p><b>Tips Strategi:</b> Posting produk dengan harga coret Rp{Math.ceil(recommendedPrice * 1.5).toLocaleString('id-ID')} lalu beri diskon toko agar menjadi Rp{recommendedPrice.toLocaleString('id-ID')}. Ini memicu psikologi belanja Bunda-bunda.</p>
+                            </div>
+                        </div>
+                        </div>
+                    </section>
+
+                    {/* Business Roadmap Overview */}
+                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h4 className="font-bold mb-6 flex items-center gap-2 uppercase tracking-wide text-slate-600">
+                        Simulasi Perputaran Modal & Stok
+                        </h4>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center">
+                            <div>
+                                <span className="block text-xs font-bold text-slate-400 uppercase">Bulan 1</span>
+                                <span className="text-lg font-bold text-slate-800">Modal Rp 1.000.000</span>
+                            </div>
+                            <div className="text-right">
+                                <span className="block text-xs font-bold text-orange-500 uppercase">Kapasitas Stok</span>
+                                <span className="text-lg font-black text-orange-600">± 100 Pcs</span>
+                            </div>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <p className="text-[11px] text-slate-500 font-medium">Fokus: 10 Review pertama, optimasi kata kunci pencarian, & testing warna terlaris.</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div className="flex justify-between items-center">
+                            <div>
+                                <span className="block text-xs font-bold text-slate-400 uppercase">Bulan 2</span>
+                                <span className="text-lg font-bold text-slate-800">Modal Rp 2.000.000</span>
+                            </div>
+                            <div className="text-right">
+                                <span className="block text-xs font-bold text-blue-500 uppercase">Kapasitas Stok</span>
+                                <span className="text-lg font-black text-blue-600">± 200 Pcs</span>
+                            </div>
+                            </div>
+                            <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                            <p className="text-[11px] text-slate-500 font-medium">Fokus: Re-stock warna pemenang, mulai Iklan Produk Serupa, & aktivasi Shopee Live.</p>
+                            </div>
+                        </div>
+                        </div>
+                    </section>
                     </div>
-                    <div className="flex justify-between text-sm border-b border-slate-700 pb-2">
-                      <span className="text-slate-400 italic">Budget Iklan</span>
-                      <span className="text-blue-400">-Rp {adsValue.toLocaleString('id-ID')}</span>
+
+                    {/* Right Column: Mini Checklist */}
+                    <div className="space-y-6 text-sm">
+                    <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
+                        <CheckCircle /> Prioritas Hari Ini
+                        </h2>
+                        <div className="space-y-3">
+                        {[
+                            { label: "Foto Detail Elastisitas Bahan", done: false },
+                            { label: "Set Template Chat Balasan Cepat", done: true },
+                            { label: "Upload 5 SKU (Hitam, Navy, Grey, Marun, Pink)", done: false },
+                            { label: "Cek Kompetitor (Harga Coreting)", done: false },
+                        ].map((item, idx) => (
+                            <div key={idx} className="flex gap-3 items-center">
+                            <div className={`w-4 h-4 rounded border ${item.done ? 'bg-green-500 border-green-500' : 'border-slate-300'}`}></div>
+                            <span className={item.done ? 'text-slate-400 line-through' : 'text-slate-700 font-medium'}>{item.label}</span>
+                            </div>
+                        ))}
+                        </div>
+                    </section>
+
+                    <section className="bg-gradient-to-br from-indigo-600 to-blue-700 p-6 rounded-2xl shadow-lg text-white">
+                        <h4 className="font-bold mb-4 flex items-center gap-2">
+                        <Info /> Mental Model Seller
+                        </h4>
+                        <p className="text-xs leading-relaxed opacity-90 mb-4">
+                        "Jangan perang harga di bawah modal. Fokus pada <b>kecepatan pengiriman</b> dan <b>keramahan chat</b>. Bunda-bunda lebih suka toko yang solutif daripada sekadar murah."
+                        </p>
+                        <div className="text-[10px] font-bold uppercase tracking-widest p-2 bg-white/10 rounded text-center">
+                        Trust is the New Currency
+                        </div>
+                    </section>
                     </div>
-                    <div className="flex justify-between items-center pt-4">
-                      <div>
-                        <span className="text-green-400 uppercase text-[10px] font-black block leading-tight">Profit Bersih</span>
-                        <span className="text-2xl font-black text-green-400 leading-tight">Rp {Math.floor(netProfit).toLocaleString('id-ID')}</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="text-slate-500 text-[10px] block">Margin Bersih</span>
-                        <span className="text-lg font-bold text-white leading-tight">{((netProfit/recommendedPrice)*100).toFixed(1)}%</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
 
-                <div className="mt-8 p-3 bg-slate-800/50 rounded-lg text-[11px] text-slate-300 leading-relaxed border border-slate-700">
-                  <p><b>Tips Strategi:</b> Posting produk dengan harga coret Rp{Math.ceil(recommendedPrice * 1.5).toLocaleString('id-ID')} lalu beri diskon toko agar menjadi Rp{recommendedPrice.toLocaleString('id-ID')}. Ini memicu psikologi belanja Bunda-bunda.</p>
+                </main>
                 </div>
-              </div>
-            </div>
-          </section>
+            );
+        };
 
-          {/* Business Roadmap Overview */}
-          <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-            <h4 className="font-bold mb-6 flex items-center gap-2 uppercase tracking-wide text-slate-600">
-               Simulasi Perputaran Modal & Stok
-            </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="block text-xs font-bold text-slate-400 uppercase">Bulan 1</span>
-                    <span className="text-lg font-bold text-slate-800">Modal Rp 1.000.000</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="block text-xs font-bold text-orange-500 uppercase">Kapasitas Stok</span>
-                    <span className="text-lg font-black text-orange-600">± 100 Pcs</span>
-                  </div>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                  <p className="text-[11px] text-slate-500 font-medium">Fokus: 10 Review pertama, optimasi kata kunci pencarian, & testing warna terlaris.</p>
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <span className="block text-xs font-bold text-slate-400 uppercase">Bulan 2</span>
-                    <span className="text-lg font-bold text-slate-800">Modal Rp 2.000.000</span>
-                  </div>
-                  <div className="text-right">
-                    <span className="block text-xs font-bold text-blue-500 uppercase">Kapasitas Stok</span>
-                    <span className="text-lg font-black text-blue-600">± 200 Pcs</span>
-                  </div>
-                </div>
-                <div className="bg-slate-50 p-3 rounded-lg border border-slate-100">
-                  <p className="text-[11px] text-slate-500 font-medium">Fokus: Re-stock warna pemenang, mulai Iklan Produk Serupa, & aktivasi Shopee Live.</p>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        {/* Right Column: Mini Checklist */}
-        <div className="space-y-6 text-sm">
-          <section className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-            <h2 className="text-lg font-bold mb-6 flex items-center gap-2">
-              <CheckCircle className="text-green-500" size={20} /> Prioritas Hari Ini
-            </h2>
-            <div className="space-y-3">
-              {[
-                { label: "Foto Detail Elastisitas Bahan", done: false },
-                { label: "Set Template Chat Balasan Cepat", done: true },
-                { label: "Upload 5 SKU (Hitam, Navy, Grey, Marun, Pink)", done: false },
-                { label: "Cek Kompetitor (Harga Coreting)", done: false },
-              ].map((item, idx) => (
-                <div key={idx} className="flex gap-3 items-center">
-                  <div className={`w-4 h-4 rounded border ${item.done ? 'bg-green-500 border-green-500' : 'border-slate-300'}`}></div>
-                  <span className={item.done ? 'text-slate-400 line-through' : 'text-slate-700 font-medium'}>{item.label}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="bg-gradient-to-br from-indigo-600 to-blue-700 p-6 rounded-2xl shadow-lg text-white">
-            <h4 className="font-bold mb-4 flex items-center gap-2">
-              <Info size={18} /> Mental Model Seller
-            </h4>
-            <p className="text-xs leading-relaxed opacity-90 mb-4">
-              "Jangan perang harga di bawah modal. Fokus pada <b>kecepatan pengiriman</b> dan <b>keramahan chat</b>. Bunda-bunda lebih suka toko yang solutif daripada sekadar murah."
-            </p>
-            <div className="text-[10px] font-bold uppercase tracking-widest p-2 bg-white/10 rounded text-center">
-              Trust is the New Currency
-            </div>
-          </section>
-        </div>
-
-      </main>
-    </div>
-  );
-};
-
-export default App;
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
